@@ -806,9 +806,7 @@ qsplit ( min , max ) = if max < min
                        then Left ()
                        else if max == 0 
                        then Left ()
-                       else if ( odd middle )
-                       then Right ( middle+min , (( min , middle-1+min) , ( middle+1+min , max)))
-                       else Right ( middle+1+min , (( min, middle+min ) , ( middle+2+min , max )))
+                       else Right ( middle+min , (( min , middle+min-1 ) , ( middle+1+min , max )))
                        where middle = ( max - min ) `div` 2
 \end{code}
 
