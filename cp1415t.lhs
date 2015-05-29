@@ -813,10 +813,12 @@ qsplit ( min , max ) = if max < min
 \subsection*{Secção \ref{sec:SList}}
 \begin{code}
 inSList :: Either a (a1, SList a1 a) -> SList a1 a
-inSList = undefined
+inSList = either Sent Cons
 
 outSList :: SList b a -> Either a (b, SList b a)
-outSList = undefined
+outSList (Sent b) = i1 b
+outSList (Cons t1 ) = i2 (t1)
+
 
 anaSList :: (c -> Either a (b, c)) -> c -> SList b a
 anaSList = undefined
