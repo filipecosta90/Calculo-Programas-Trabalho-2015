@@ -48,7 +48,7 @@ invBTree = cataBTree (inBTree . (id -|- id >< swap))
 
 -- (4.2) Counting --------------------------------------------------------------
 
-countBTree = cataBTree (either (const 0) (succ . (uncurry (+)) . p2))
+countBTree = cataBTree (either (const 0) (succ . (uncurry (+)) . p2)) 
 
 -- (4.3) Serialization ---------------------------------------------------------
 

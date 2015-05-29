@@ -841,31 +841,34 @@ mgen ( x:l1, a:l2) = if x <= a
 \subsection*{Secção \ref{sec:sierp}}
 
 \begin{code}
-inTLTree = undefined 
 
-outTLTree = undefined
+inTLTree :: Either a  (TLTree a ,( TLTree a,TLTree a)) -> TLTree a
+inTLTree = either L N
 
-baseTLTree = undefined
+outTLTree :: TLTree a -> Either a ( TLTree a , ( TLTree a, TLTree a))
+outTLTree ( L a ) = i1 a
+outTLTree ( N t1 ) = i2 (t1)
 
-recTLTree = undefined
+baseTLTree f c = f -|- c >< ( c >< c )
 
-cataTLTree = undefined
+recTLTree a = id -|-  id >< ( id >< id )
 
-anaTLTree f = undefined
+cataTLTree c = c . ( recTLTree ( cataTLTree c ) ) . outTLTree
 
-hyloTLTree a c = undefined
+anaTLTree f = inTLTree . (recTLTree ( anaTLTree f )) . f
+
+hyloTLTree a c = cataTLTree a . anaTLTree c
 
 tipsTLTree = undefined
 
-invTLTree = undefined
+invTLTree = undefined 
 
 depthTLTree = undefined
 
 geraSierp :: Tri -> Int -> TLTree Tri
 geraSierp = undefined
 
-countTLTree :: TLTree b -> Int
-countTLTree = undefined
+countTLTree = cataTLTree (either (const 3) ( succ . ( (uncurry (+)) . ( (uncurry (+) . p2 ))) ) )
 
 draw = render html where
        html = rep dados
