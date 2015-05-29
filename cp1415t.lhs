@@ -819,18 +819,23 @@ outSList :: SList b a -> Either a (b, SList b a)
 outSList (Sent b) = i1 b
 outSList (Cons t1 ) = i2 (t1)
 
+recSList f = id -|- id >< f
 
 anaSList :: (c -> Either a (b, c)) -> c -> SList b a
-anaSList = undefined
+anaSList g = inSList . ( recSList ( anaSList g ) ) . g
 
 cataSList :: (Either b (a, d) -> d) -> SList a b -> d
-cataSList = undefined
+cataSList g = g . recSList (cataSList g) . outSList
 
 hyloSList :: (Either b (d, c) -> c) -> (a -> Either b (d, a)) -> a -> c
-hyloSList = undefined
+hyloSList h g = cataSList h . anaSList g
 
 mgen :: Ord a => ([a], [a]) -> Either [a] (a, ([a], [a]))
-mgen = undefined
+mgen ( x,[] )   = Left x
+mgen ( [],x ) = Left x
+mgen ( x:l1, a:l2) = if x <= a
+                     then Right (x , (l1, (a:l2)) )
+                     else Right ( a , ((x:l1) ,l2) )
 \end{code}
 
 \subsection*{Secção \ref{sec:sierp}}
