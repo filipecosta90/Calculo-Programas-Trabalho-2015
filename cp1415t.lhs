@@ -847,11 +847,11 @@ inTLTree = either L N
 
 outTLTree :: TLTree a -> Either a ( TLTree a , ( TLTree a, TLTree a))
 outTLTree ( L a ) = i1 a
-outTLTree ( N t1 ) = i2 (t1)
+outTLTree ( N (t1,(t2,t3))) = i2 (t1,(t2,t3))
 
-baseTLTree f c = f -|- c >< ( c >< c )
+baseTLTree f c = f -|- ( c >< ( c >< c ) )
 
-recTLTree a = id -|-  id >< ( id >< id )
+recTLTree a = id -|-  ( a >< ( a >< a ))
 
 cataTLTree c = c . ( recTLTree ( cataTLTree c ) ) . outTLTree
 
@@ -859,7 +859,8 @@ anaTLTree f = inTLTree . (recTLTree ( anaTLTree f )) . f
 
 hyloTLTree a c = cataTLTree a . anaTLTree c
 
-tipsTLTree = undefined
+tipsTLTree = cataLTree (either singl ( conc . ( id >< conc )))
+         where conc (l,r) = l ++ r
 
 invTLTree = undefined 
 
@@ -869,7 +870,7 @@ geraSierp :: Tri -> Int -> TLTree Tri
 
 geraSierp = undefined
 
-countTLTree = undefined 
+countTLTree = cataTLTree (either one ( (uncurry (+) ) . ( id >< add) ) )
 
 draw = render html where
        html = rep dados
