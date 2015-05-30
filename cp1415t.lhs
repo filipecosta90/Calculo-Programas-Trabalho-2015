@@ -888,16 +888,25 @@ Defina
 
 pTransPalavra(x,s) = D [ ( (x : s) , 0.95) , ( s , 0.05 ) ]
 
--- pTransStop (x,xs) = D [ ( (x:xs), 0.90), ( x , 0.10)]
-
 gene = either pNaoStop pTransPalavra where pNaoStop = return . nil
 \end{code}
-e responda ao problema do enunciado aqui.
+
+A probabilidade de ["Vamos","atacar","hoje"] é 85.7%. 
+Contudo como a máquina falha 10\% das vezes a enviar o codigo stop podemos concluir que a probabilidade da transmissão perfeita é de:
+85.7 * 0.9 = 77.13\%.\\
+Podemos também concluir que a probabilidade da máquina enviar ["Vamos","atacar","hoje"] sem o stop final é de 85.7 * 0.10 = 8.57\%
+A probabilidade de ["Vamos","hoje"] é 4.5\%. Assumindo a mesma falha da máquina alcançamos uma probabilidade de 4.5 * 0.90 = 4.05\%%
 
 \subsection*{Secção \ref{sec:parBTreeMap}}
 Defina
 \begin{code}
-parBTreeMap = undefined
+parBTreeMap f Empty = return Empty 
+parBTreeMap f (Node (a,(left,right))) = do
+     a' <- rpar (f a)
+     left' <- parBTreeMap f left
+     right' <- parBTreeMap f right
+     return ( Node ( a',(left',right')))
+
 \end{code}
 e apresente aqui os resultados das suas experiências com essa função.
 
