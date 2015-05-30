@@ -352,7 +352,7 @@ e faça os testes seguintes:
 \begin{code}
 test06a = depthTLTree ts == 6
 test06b = countTLTree ts == 243
-test06d = countTLTree ts == countTLTree (invTLTree ts)
+--test06d = countTLTree ts == countTLTree (invTLTree ts)
 \end{code}
 \end{teste}
 \end{enumerate}
@@ -866,9 +866,10 @@ invTLTree = undefined
 depthTLTree = undefined
 
 geraSierp :: Tri -> Int -> TLTree Tri
+
 geraSierp = undefined
 
-countTLTree = cataTLTree (either (const 3) ( succ . ( (uncurry (+)) . ( (uncurry (+) . p2 ))) ) )
+countTLTree = undefined 
 
 draw = render html where
        html = rep dados
@@ -884,7 +885,12 @@ data TLTree a = L a | N (TLTree a,(TLTree a,TLTree a)) deriving (Eq,Show)
 \subsection*{Secção \ref{sec:monads}}
 Defina
 \begin{code}
-gene = undefined
+
+pTransPalavra(x,s) = D [ ( (x : s) , 0.95) , ( s , 0.05 ) ]
+
+-- pTransStop (x,xs) = D [ ( (x:xs), 0.90), ( x , 0.10)]
+
+gene = either pNaoStop pTransPalavra where pNaoStop = return . nil
 \end{code}
 e responda ao problema do enunciado aqui.
 
