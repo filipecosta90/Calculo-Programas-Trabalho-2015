@@ -352,7 +352,8 @@ e faça os testes seguintes:
 \begin{code}
 test06a = depthTLTree ts == 6
 test06b = countTLTree ts == 243
---test06d = countTLTree ts == countTLTree (invTLTree ts)
+test06c = countTLTree ts == length ( tipsTLTree ts )
+test06d = countTLTree ts == countTLTree (invTLTree ts)
 \end{code}
 \end{teste}
 \end{enumerate}
@@ -789,11 +790,8 @@ outras funções auxiliares que sejam necessárias.
 \subsection*{Secção \ref{sec:LTree}}
 \begin{code}
 
-succMax2 :: ( Integer , Integer ) -> Integer
-succMax2 ( a , b ) = succ ( max a b )
-
 depth :: LTree a -> Integer
-depth = cataLTree ( either  ( const 1 ) ( succMax2 ) )
+depth = cataLTree ( either  ( const 1 ) ( succ . ( uncurry(max)) ) )
 
 balance :: LTree a -> LTree a
 balance = hyloLTree inLTree lsplit . tips
@@ -859,23 +857,31 @@ anaTLTree f = inTLTree . (recTLTree ( anaTLTree f )) . f
 
 hyloTLTree a c = cataTLTree a . anaTLTree c
 
-tipsTLTree = cataLTree (either singl ( conc . ( id >< conc )))
+tipsTLTree = cataTLTree (either singl ( conc . ( id >< conc ) ) )
          where conc (l,r) = l ++ r
 
-invTLTree = undefined 
+swapT :: (TLTree a ,( TLTree a,TLTree a))  -> (TLTree a ,( TLTree a,TLTree a)) 
+swapT (t1,(t2,t3)) = (t3,(t2,t1))
 
-depthTLTree = undefined
+invTLTree = cataTLTree ( inTLTree . ( id -|- swapT ) )
+
+depthTLTree = cataTLTree ( either ( const 1) ( succ . ( uncurry(max) . ( id >< uncurry(max) ))))
+
+goDown :: (Tri , Int )-> Either Tri ( (Tri , Int) , (( Tri ,  Int ), ( Tri , Int )))
+goDown (((x,y),z), 0)    = i1 ((x,y),z)
+goDown (((x,y),z), n)    = i2 ( ( ( ( x ,y ),s) , pred n ) ,( ( ( ( somar x s , y ) , s) , pred n ) , (((x, somar y s),s) , pred  n) ))
+                     where s = z `div` 2 
 
 geraSierp :: Tri -> Int -> TLTree Tri
+geraSierp t n = ( anaTLTree goDown ) (t, n)
 
-geraSierp = undefined
-
-countTLTree = cataTLTree (either one ( (uncurry (+) ) . ( id >< add) ) )
+countTLTree = cataTLTree (either (const 1) ( (uncurry (+) ) . ( id >< uncurry (+) ) ) )
 
 draw = render html where
        html = rep dados
 
 rep = undefined
+
 \end{code}
 \pdfout{%
 \begin{code}
