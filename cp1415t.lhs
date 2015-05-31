@@ -916,12 +916,30 @@ A probabilidade de ["Vamos","hoje"] é 4.5\%. Assumindo a mesma falha da máquin
 \subsection*{Secção \ref{sec:parBTreeMap}}
 Defina
 \begin{code}
-parBTreeMap f Empty = return Empty 
+
+parBTreeMap f Empty = return Empty
 parBTreeMap f (Node (a,(left,right))) = do
      a' <- rpar (f a)
      left' <- parBTreeMap f left
      right' <- parBTreeMap f right
      return ( Node ( a',(left',right')))
+
+seqBTreeMap :: (a -> b) -> (BTree a) -> Eval (BTree b)
+seqBTreeMap f Empty = return Empty
+seqBTreeMap f (Node (a,(left,right))) = do
+      a' <- rseq (f a)
+      left' <- seqBTreeMap f left
+      right' <- seqBTreeMap f right
+      return ( Node ( a',(left',right')))
+
+--Bmap :: (a -> b) -> [a] -> [b]
+----Bmap f  = cataBTree ( inBTree . baseBTree f id )
+
+finalPar  =  parBTreeMap fib t1
+finalParEval =   runEval finalPar 
+
+finalSeq = seqBTreeMap fib t1
+finalSeqEval = runEval finalSeq
 
 \end{code}
 e apresente aqui os resultados das suas experiências com essa função.
