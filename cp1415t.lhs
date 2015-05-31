@@ -880,7 +880,16 @@ countTLTree = cataTLTree (either (const 1) ( (uncurry (+) ) . ( id >< uncurry (+
 draw = render html where
        html = rep dados
 
-rep = undefined
+rep :: (((Int, Int), Side), Int) -> [Char]
+rep  = gerahtml . unfold 
+
+unfold :: (((Int, Int), Side), Int) -> TLTree Tri
+unfold (((t2, t3), t1), t) = geraSierp ((t2, t3), t1) t
+
+apresentaSierp = cataTLTree (either drawTriangle ( conc . ( id >< conc ) ) )
+        where conc (l,r) = l ++ r 
+      
+gerahtml = finalize . apresentaSierp
 
 \end{code}
 \pdfout{%
